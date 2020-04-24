@@ -1,0 +1,272 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "Microsoft.FileShares",
+      "description": "The Azure Storage Management API.",
+      "version": "2020-06-01"
+    },
+    "host": "management.azure.com",
+    "schemes": [
+      "https"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+        "/subscriptions/{subscriptionId}/providers/Microsoft.FileShares/checkNameAvailability": {
+        },
+        "/subscriptions/subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.FileShares": {
+            "tags": [
+                "FileShares"
+            ],
+            "operationId": "FileShares_List",
+            "description": "",
+            "x-ms-examples": {},
+            "parameters": [
+                {
+                    "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/ApiVersionParameter"
+                  },
+                  {
+                    "$ref": "../../../../../common-types/resource-management/v1/types.json#/parameters/SubscriptionIdParameter"
+                  }
+            ], 
+            "responses": {
+                "200": {
+                    "description": "",
+                    "schema": {
+                        "$ref": "#/definitions/FileShareListResult"
+                    }
+                }
+            }, 
+            "x-ms-pageable": {
+                "nextLinkName": "nextLink"
+            }
+        },
+        "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.FileShares/{fileShareName}": {
+        }
+    },
+    "definitions": {
+        "FileShareListResult": {
+            "properties": {
+                "value": {
+                    "readOnly": true,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/FileShare"
+                    }
+                },
+                "nextLink": {
+                    "type": "string",
+                    "description": "",
+                    "readonly": true
+                }
+            },
+            "description": ""
+        },
+        "FileShare": {
+            "properties": {
+                "redundancy": {
+                    "readOnly": false,
+                    "type": "string",
+                    "description": "",
+                    "enum": [
+                        "Local",
+                        "Zone",
+                        "Geo",
+                        "GeoZone"
+                    ]
+                },
+                "tier": {
+                    "$ref": "#/definitions/TierProperties"
+                },
+                "size": {
+                    "type": "integer",
+                    "description": ""
+                },
+                "encryptionInTransit": {
+                    "type": "boolean",
+                    "description": ""
+                }, 
+                "encryptionAtRest": {
+                    "$ref": "#/definitions/EncryptionParameters"
+                },
+                "creationTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "identityProviders": {
+                    "$ref": "#/definitions/IdentityProviderProperties"
+                },
+                "protocol": {
+                    "type": "array",
+                    "enum": [
+                        "SMBv2.1",
+                        "SMBv3.0",
+                        "SMBv3.1.1",
+                        "NFSv4.1"
+                    ]
+                },
+                "endpoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/EndpointProperties"
+                    }
+                }
+            },
+            "allOf": [
+                {
+                  "$ref": "../../../../../common-types/resource-management/v1/types.json#/definitions/TrackedResource"
+                }
+            ],
+            "description": ""
+        },
+        "EncryptionParameters": {
+            "properties": {
+                "keySource": {                
+                    "type": "string",
+                    "description": "",
+                    "enum": [
+                        "Microsoft.FileShares",
+                        "Microsoft.KeyVault"
+                    ],
+                    "default": "Microsoft.Storage"
+                },
+                "externalKeySource": {
+                    "$ref": "#/definitions/ExternalEncryptionKeySource"
+                }
+            },
+            "required": [
+                "keySource"
+            ],
+            "description": ""
+        },
+        "KeyVaultProperties": {
+            "properties": {
+                "keyName": {
+                    "type": "string"
+                },
+                "keyVersion": {
+                    "type": "string"
+                },
+                "keyUri": {
+                    "type": "string"
+                },
+                "currentVersionedKeyIdentifier": {
+                    "type": "string"
+                },
+                "lastKeyRotationTimestamp": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "IdentityProviderProperties": {
+            "properties": {
+                "enabledIdentityProviders": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "enum": [
+                        "sharedKey",
+                        "activeDirectory",
+                        "azureActiveDirectoryDomainServices"
+                    ]
+                }, 
+                "activeDirectoryProperties": {
+                    "$ref": "#/definitions/ActiveDirectoryProperties"
+                }
+            }
+        },
+        "ActiveDirectoryProperties": {
+            "properties": {
+              "domainName": {
+                "type": "string",
+                "description": "Specifies the primary domain that the AD DNS server is authoritative for."
+              },
+              "netBiosDomainName": {
+                "type": "string",
+                "description": "Specifies the NetBIOS domain name."
+              },
+              "forestName": {
+                "type": "string",
+                "description": "Specifies the Active Directory forest to get."
+              },
+              "domainGuid": {
+                "type": "string",
+                "description": "Specifies the domain GUID."
+              },
+              "domainSid": {
+                "type": "string",
+                "description": "Specifies the security identifier (SID)."
+              },
+              "azureStorageSid": {
+                "type": "string",
+                "description": "Specifies the security identifier (SID) for Azure Storage."
+              }
+            },
+            "required": [
+              "domainName",
+              "netBiosDomainName",
+              "forestName",
+              "domainGuid",
+              "domainSid",
+              "azureStorageSid"
+            ],
+            "description": "Settings properties for Active Directory (AD)."
+        },
+        "TierProperties": {
+            "properties": {
+                "tier": {
+                    "type": "string",
+                    "description": "",
+                    "enum": [
+                        "Premium",
+                        "TransactionOptimized",
+                        "Hot",
+                        "Cool"
+                    ]
+                },
+                "tierStatus": {
+                    "type": "string",
+                    "description": "",
+                    "enum": [
+                        "active",
+                        "pending-from-premium",
+                        "pending-from-transactionoptimized",
+                        "pending-from-hot",
+                        "pending-from-cool"
+                    ]
+                }
+            }
+        },
+        "EndpointProperties": {
+            "properties": {
+                "endpointType": {
+                    "type": "string",
+                    "enum": [
+                        "primary",
+                        "secondary"
+                    ]
+                },
+                "endpointKind": {
+                    "type": "string",
+                    "enum": [
+                        "hostName",
+                        "privatelinkHostName",
+                        "UNC",
+                        "HTTPS",
+                        "Unix"
+                    ]
+                },
+                "endpoint": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "parameters": {}
+  }
